@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<style>
+/* ============================================================
+   LEXORAI — VÍDEO DE VENDAS · 1920x1080 · 30fps · ~45s
+   Composição única, 8 cenas (#s1..#s8), crossfade entre elas.
+   Identidade "Esmeralda Editorial" (igual ao pitch).
+   ============================================================ */
+
+/* ---- Fontes locais (embutidas no render) ---- */
+@font-face{font-family:'Boska';src:url('fonts/boska-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Boska';src:url('fonts/boska-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Boska';src:url('fonts/boska-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:'Boska';src:url('fonts/boska-900.woff2') format('woff2');font-weight:900;font-style:normal;font-display:block}
+@font-face{font-family:'Supreme';src:url('fonts/supreme-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Supreme';src:url('fonts/supreme-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Supreme';src:url('fonts/supreme-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:'JetBrains Mono';src:url('fonts/jbm-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'JetBrains Mono';src:url('fonts/jbm-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+
+:root{
+  --bg:#06100f; --bg2:#0c211d; --panel:#0b1a18; --panel2:#0e2220;
+  --ink:#eef5f3; --muted:#7e9b96; --muted2:#5e7873;
+  --accent:#1fd6a6; --accent-soft:#7ef0d2; --accent2:#0e7c66;
+  --warn:#e2b24a; --line:rgba(31,214,166,.16); --line-soft:rgba(238,245,243,.08);
+  --font-d:'Boska',serif; --font-b:'Supreme',sans-serif; --font-m:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000}
+body{font-family:var(--font-b);color:var(--ink)}
+
+/* ---- Palco / cenas ---- */
+.scene{position:absolute;top:0;left:0;width:1920px;height:1080px;overflow:hidden;
+  background:radial-gradient(110% 120% at 12% 0%,var(--bg2) 0%,var(--bg) 55%)}
+#s1{z-index:1}#s2{z-index:2;opacity:0}#s3{z-index:3;opacity:0}#s4{z-index:4;opacity:0}
+#s5{z-index:5;opacity:0}#s6{z-index:6;opacity:0}#s7{z-index:7;opacity:0}#s8{z-index:8;opacity:0}
+
+/* ---- Texturas / componentes compartilhados ---- */
+.dots{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(var(--line) 1.5px,transparent 1.5px);background-size:46px 46px;
+  -webkit-mask:radial-gradient(95% 95% at 25% 25%,#000,transparent);mask:radial-gradient(95% 95% at 25% 25%,#000,transparent);pointer-events:none}
+.beam{position:absolute;right:0;top:0;width:860px;height:100%;background:linear-gradient(115deg,transparent 38%,rgba(31,214,166,.08) 54%,transparent 70%);pointer-events:none}
+.glow-amb{position:absolute;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at center,rgba(31,214,166,.16),rgba(31,214,166,0) 68%)}
+.logo{display:flex;align-items:center;gap:16px}
+.logo .glyph{width:42px;height:42px;position:relative;transform:rotate(45deg);flex:0 0 auto}
+.logo .glyph .o{position:absolute;inset:0;border:2.5px solid var(--accent);border-radius:11px}
+.logo .glyph .i{position:absolute;inset:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:5px}
+.logo .wm{font-family:var(--font-d);font-weight:700;font-size:34px;letter-spacing:-1px}
+.logo .wm b{color:var(--accent)}
+.kicker{display:inline-flex;align-items:center;gap:13px;font-family:var(--font-m);font-size:19px;color:var(--accent);border:1px solid var(--line);padding:11px 20px;border-radius:999px;width:max-content;letter-spacing:.04em}
+.kicker.warn{color:var(--warn);border-color:rgba(226,178,74,.3)}
+.kicker .pulse{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.kicker.warn .pulse{background:var(--warn);box-shadow:0 0 12px var(--warn)}
+.title{font-family:var(--font-d);font-weight:700;line-height:1;letter-spacing:-2px;color:var(--ink)}
+.title em{font-style:italic;font-weight:500;color:var(--accent)}
+.title .g{font-style:italic;font-weight:500;background:linear-gradient(100deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;color:transparent}
+.graph{position:absolute}
+.browser{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0a1614;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.browser .bar{height:46px;background:#0a1614;display:flex;align-items:center;gap:9px;padding:0 20px;border-bottom:1px solid var(--line-soft)}
+.browser .bar i{width:12px;height:12px;border-radius:50%;background:#26433d;display:block}
+.browser .bar .url{margin-left:16px;font-family:var(--font-m);font-size:15px;color:var(--muted2)}
+
+/* ================= CENA 1 — ABERTURA ================= */
+#s1 .logo{position:absolute;left:120px;top:88px;opacity:0}
+#s1 .wrap{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:1200px;padding-bottom:60px}
+#s1 .ln{font-family:var(--font-d);font-weight:700;font-size:128px;line-height:1.02;letter-spacing:-3px;opacity:0}
+#s1 .u{position:relative;font-style:italic;font-weight:500;color:var(--accent);display:inline-block}
+#s1 .u-line{position:absolute;left:0;right:0;bottom:-12px;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-soft));transform:scaleX(0);transform-origin:left center}
+#s1 .graph{right:96px;top:50%;margin-top:-310px;width:620px;height:620px}
+
+/* ================= CENA 2 — O PROBLEMA ================= */
+#s2 .left{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:850px;padding-bottom:30px}
+#s2 .kicker{opacity:0}
+#s2 h2{font-size:80px;line-height:1.04;margin-top:30px;opacity:0}
+#s2 .scatter{position:absolute;right:90px;top:0;width:880px;height:100%}
+#s2 .chip{position:absolute;opacity:0}
+#s2 .chip-in{font-family:var(--font-b);font-weight:500;font-size:30px;color:#e8c373;background:rgba(226,178,74,.09);
+  border:1px solid rgba(226,178,74,.42);border-radius:14px;padding:20px 30px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35);display:inline-block}
+#s2 .c1{top:170px;left:70px}  #s2 .c1 .chip-in{transform:rotate(-5deg)}
+#s2 .c2{top:340px;left:430px} #s2 .c2 .chip-in{transform:rotate(4deg)}
+#s2 .c3{top:500px;left:120px} #s2 .c3 .chip-in{transform:rotate(-2.5deg)}
+#s2 .c4{top:660px;left:440px} #s2 .c4 .chip-in{transform:rotate(6deg)}
+#s2 .c5{top:820px;left:150px} #s2 .c5 .chip-in{transform:rotate(-4deg)}
+
+/* ================= CENA 3 — A CONVERGÊNCIA ================= */
+#s3 .kicker{position:absolute;left:120px;top:120px;opacity:0}
+#s3 svg{position:absolute;left:370px;top:160px;width:1180px;height:760px}
+#s3 .cline{fill:none;stroke:rgba(31,214,166,.42);stroke-width:1.5}
+#s3 .cflow{fill:none;stroke:var(--accent-soft);stroke-width:1.6;stroke-dasharray:7 9;opacity:0}
+#s3 .lbl{opacity:0}
+#s3 .lbl text{font-family:var(--font-b);font-weight:500;font-size:22px}
+#s3 .note{position:absolute;left:120px;bottom:118px;display:flex;align-items:center;gap:18px;font-family:var(--font-m);font-size:18px;color:var(--muted2);opacity:0}
+#s3 .note i{width:28px;height:1px;background:var(--accent);display:block}
+
+/* ================= CENA 4 — COMO FUNCIONA ================= */
+#s4 .kicker{position:absolute;left:120px;top:120px;opacity:0}
+#s4 .cols{position:absolute;left:120px;right:120px;top:340px;display:flex;gap:0}
+#s4 .pillar{flex:1;padding:0 56px}
+#s4 .pillar:first-child{padding-left:0}#s4 .pillar:last-child{padding-right:0}
+#s4 .pdiv{width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,var(--line),transparent);flex:0 0 auto;transform:scaleY(0);transform-origin:center}
+#s4 .pnum{font-family:var(--font-d);font-weight:900;font-size:158px;line-height:.8;color:transparent;-webkit-text-stroke:2px var(--accent);margin-bottom:34px;opacity:0}
+#s4 .pillar b{display:block;font-family:var(--font-d);font-weight:700;font-size:46px;color:var(--ink);margin-bottom:22px;letter-spacing:-.5px;opacity:0}
+#s4 .pillar p{font-size:26px;line-height:1.5;color:var(--muted);opacity:0}
+
+/* ================= CENA 5 — O PRODUTO EM AÇÃO ================= */
+#s5 .kicker{position:absolute;left:120px;top:104px;opacity:0}
+#s5 .score{position:absolute;left:120px;top:300px;width:560px;background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:34px 38px;opacity:0}
+#s5 .score .lab{font-family:var(--font-m);font-size:15px;color:var(--muted);letter-spacing:.1em;margin-bottom:22px}
+#s5 .scorebar{display:flex;align-items:center;gap:18px;margin:16px 0}
+#s5 .scorebar span{font-size:20px;color:var(--muted);width:120px;flex:0 0 auto}
+#s5 .scorebar .track{flex:1;height:11px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+#s5 .scorebar .fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:6px;transform:scaleX(0);transform-origin:left center}
+#s5 .scorebar b{font-family:var(--font-d);font-weight:700;font-size:23px;width:84px;text-align:right;flex:0 0 auto;opacity:0}
+#s5 .scorebar.final b{color:var(--accent)}
+#s5 .scorebar.final .fill{background:linear-gradient(90deg,var(--accent),var(--accent-soft))}
+#s5 .mock{position:absolute;right:120px;top:230px;width:1010px;opacity:0}
+#s5 .ui{padding:40px 44px}
+#s5 .ui .q{font-family:var(--font-d);font-weight:700;font-size:30px;color:var(--ink);margin-bottom:24px}
+#s5 .ui .field{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025);padding:24px 26px;font-size:21px;color:var(--muted);margin-bottom:26px}
+#s5 .ui .field .cursor{color:var(--accent)}
+#s5 .ui .filters{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+#s5 .fchip{font-family:var(--font-m);font-size:16px;padding:10px 18px;border-radius:9px;border:1px solid var(--line-soft);color:var(--muted)}
+#s5 .fchip.on{border-color:var(--accent);color:var(--accent);background:rgba(31,214,166,.1)}
+#s5 .ui .actions{display:flex;gap:16px}
+#s5 .btn{font-family:var(--font-b);font-weight:500;font-size:19px;padding:16px 30px;border-radius:11px}
+#s5 .btn.ghost{border:1px solid var(--line);color:var(--ink);background:transparent}
+#s5 .btn.solid{background:var(--accent);color:#05221c;font-weight:600}
+
+/* ================= CENA 6 — CONSTRUÍDA PARA O JUDICIÁRIO ================= */
+#s6 .kicker{position:absolute;left:120px;top:120px;opacity:0}
+#s6 h2{position:absolute;left:120px;top:188px;font-size:74px;opacity:0}
+#s6 .seals{position:absolute;left:120px;right:120px;top:412px;display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+#s6 .shield{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line-soft);border-top:2px solid var(--accent);border-radius:18px;padding:36px 34px;opacity:0}
+#s6 .shead{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+#s6 .sicon{width:60px;height:60px;border-radius:15px;background:rgba(31,214,166,.1);border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+#s6 .sicon svg{width:32px;height:32px;stroke:var(--accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#s6 .stag{font-family:var(--font-m);font-size:16px;letter-spacing:.06em;color:var(--accent)}
+#s6 .shield b{display:block;font-family:var(--font-d);font-weight:700;font-size:31px;color:var(--ink);margin-bottom:14px;letter-spacing:-.5px;line-height:1.1}
+#s6 .shield p{font-size:21px;line-height:1.5;color:var(--muted)}
+#s6 .graph{right:40px;bottom:-240px;width:620px;height:620px;opacity:.34}
+
+/* ================= CENA 7 — A PROMESSA ================= */
+#s7 .wrap{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:1180px;padding-bottom:30px}
+#s7 h2{font-family:var(--font-d);font-weight:700;font-size:118px;line-height:1;letter-spacing:-3px}
+#s7 .l1,#s7 .l2{opacity:0}
+#s7 .gr{font-style:italic;font-weight:500;background:linear-gradient(100deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;color:transparent}
+#s7 p{font-size:31px;line-height:1.5;color:var(--muted);max-width:880px;margin-top:36px;opacity:0}
+#s7 .graph{right:70px;top:50%;margin-top:-310px;width:620px;height:620px}
+
+/* ================= CENA 8 — FECHAMENTO ================= */
+#s8 .graph{right:120px;top:50%;margin-top:-260px;width:520px;height:520px;opacity:.5}
+#s8 .s8glow{left:50%;top:50%;width:900px;height:900px;margin-left:-450px;margin-top:-450px;opacity:0}
+#s8 .center{position:absolute;left:0;right:0;top:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2}
+#s8 .logo{transform:scale(1.3);margin-bottom:54px;opacity:0}
+#s8 .talk{font-family:var(--font-d);font-weight:700;font-size:96px;letter-spacing:-2px;opacity:0}
+#s8 .seal-row{font-family:var(--font-m);font-size:22px;color:var(--muted);margin-top:42px;letter-spacing:.04em;opacity:0}
+#s8 .seal-row.two{font-size:18px;color:var(--muted2);margin-top:16px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="45" data-width="1920" data-height="1080">
+
+  <!-- ===================== CENA 1 ===================== -->
+  <div id="s1" class="scene">
+    <div class="dots"></div>
+    <div class="beam"></div>
+    <canvas id="g1" class="graph" width="620" height="620"></canvas>
+    <div class="logo"><span class="glyph"><span class="o"></span><span class="i"></span></span><span class="wm">Lexor<b>AI</b></span></div>
+    <div class="wrap">
+      <div style="font-family:var(--font-d);font-weight:700">
+        <div class="ln" id="s1l1">Encontre o</div>
+        <div class="ln" id="s1l2">precedente <span class="u" id="s1u">certo<i class="u-line" id="s1uline"></i></span></div>
+        <div class="ln" id="s1l3">em segundos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 2 ===================== -->
+  <div id="s2" class="scene">
+    <div class="dots" id="s2dots"></div>
+    <div class="left">
+      <div class="kicker warn"><span class="pulse"></span>O PROBLEMA</div>
+      <h2 class="title">A jurisprudência existe.<br><span class="g">Encontrá-la</span> é o problema.</h2>
+    </div>
+    <div class="scatter">
+      <div class="chip c1"><span class="chip-in">Tabela IRR</span></div>
+      <div class="chip c2"><span class="chip-in">Súmulas / OJs</span></div>
+      <div class="chip c3"><span class="chip-in">Repercussão Geral</span></div>
+      <div class="chip c4"><span class="chip-in">ADI / ADC / ADPF</span></div>
+      <div class="chip c5"><span class="chip-in">PDFs avulsos</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 3 ===================== -->
+  <div id="s3" class="scene">
+    <div class="dots"></div>
+    <div class="kicker"><span class="pulse"></span>A CONVERGÊNCIA</div>
+    <svg viewBox="0 0 1180 760">
+      <defs>
+        <radialGradient id="coreG" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(31,214,166,.55)"/>
+          <stop offset="100%" stop-color="rgba(31,214,166,0)"/>
+        </radialGradient>
+      </defs>
+      <!-- linhas base (draw-on) — terminam na borda do círculo (x=624 = 720-96) -->
+      <path class="cline" id="cl0" d="M250,96 C520,96 470,360 624,372"/>
+      <path class="cline" id="cl1" d="M250,236 C500,236 480,360 624,376"/>
+      <path class="cline" id="cl2" d="M250,380 C470,380 500,380 624,380"/>
+      <path class="cline" id="cl3" d="M250,524 C500,524 480,400 624,384"/>
+      <path class="cline" id="cl4" d="M250,664 C520,664 470,400 624,388"/>
+      <!-- linhas tracejadas (fluxo contínuo) -->
+      <path class="cflow" id="cf0" d="M250,96 C520,96 470,360 624,372"/>
+      <path class="cflow" id="cf1" d="M250,236 C500,236 480,360 624,376"/>
+      <path class="cflow" id="cf2" d="M250,380 C470,380 500,380 624,380"/>
+      <path class="cflow" id="cf3" d="M250,524 C500,524 480,400 624,384"/>
+      <path class="cflow" id="cf4" d="M250,664 C520,664 470,400 624,388"/>
+      <!-- rótulos (âmbar -> esmeralda via tween de cor) -->
+      <g class="lbl" id="lb0"><rect x="40" y="68"  width="220" height="56" rx="13"/><text x="150" y="104" text-anchor="middle">Tabela IRR</text></g>
+      <g class="lbl" id="lb1"><rect x="40" y="208" width="220" height="56" rx="13"/><text x="150" y="244" text-anchor="middle">Súmulas / OJs</text></g>
+      <g class="lbl" id="lb2"><rect x="40" y="352" width="220" height="56" rx="13"/><text x="150" y="388" text-anchor="middle">Repercussão Geral</text></g>
+      <g class="lbl" id="lb3"><rect x="40" y="496" width="220" height="56" rx="13"/><text x="150" y="532" text-anchor="middle">ADI / ADC / ADPF</text></g>
+      <g class="lbl" id="lb4"><rect x="40" y="636" width="220" height="56" rx="13"/><text x="150" y="672" text-anchor="middle">PDFs avulsos</text></g>
+      <!-- núcleo -->
+      <circle cx="720" cy="380" r="124" fill="none" stroke="rgba(31,214,166,.16)" stroke-width="1"/>
+      <circle id="s3glow" cx="720" cy="380" r="150" fill="url(#coreG)" opacity="0.06"/>
+      <circle cx="720" cy="380" r="96" fill="#08201b" stroke="rgba(31,214,166,.35)" stroke-width="1.5"/>
+      <circle id="s3ring" cx="720" cy="380" r="64" fill="rgba(31,214,166,.14)" stroke="#1fd6a6" stroke-width="2.5"/>
+      <text x="720" y="372" text-anchor="middle" font-family="Boska, serif" font-weight="700" font-size="38" fill="#1fd6a6">Lexor</text>
+      <text x="720" y="404" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="15" letter-spacing="1" fill="#7ef0d2">um fluxo</text>
+    </svg>
+    <div class="note"><i></i>Do caos à ordem: cada fonte vira um nó conectado.</div>
+  </div>
+
+  <!-- ===================== CENA 4 ===================== -->
+  <div id="s4" class="scene">
+    <div class="dots"></div>
+    <div class="glow-amb" style="left:760px;top:380px;width:520px;height:520px"></div>
+    <div class="kicker"><span class="pulse"></span>COMO FUNCIONA</div>
+    <div class="cols">
+      <div class="pillar"><div class="pnum">I</div><b>Unificação</b><p>Linguagem natural ou PDF, sem navegar por tabelas.</p></div>
+      <div class="pdiv"></div>
+      <div class="pillar"><div class="pnum">II</div><b>Recuperação</b><p>Busca textual + vetorial por similaridade.</p></div>
+      <div class="pdiv"></div>
+      <div class="pillar"><div class="pnum">III</div><b>Explicação</b><p>Resultados com as fontes sempre à mostra.</p></div>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 5 ===================== -->
+  <div id="s5" class="scene">
+    <div class="dots"></div>
+    <div class="kicker"><span class="pulse"></span>O PRODUTO EM AÇÃO</div>
+    <div class="mock">
+      <div class="browser">
+        <div class="bar"><i></i><i></i><i></i><span class="url">lexorai.app</span></div>
+        <div class="ui">
+          <div class="q">Buscar precedente</div>
+          <div class="field">Trabalho intermitente e horas extras no regime 12x36<span class="cursor" id="s5cur">▎</span></div>
+          <div class="filters">
+            <span class="fchip on">TST</span><span class="fchip on">STF</span>
+            <span class="fchip">IRR</span><span class="fchip">Súmulas</span><span class="fchip">Repercussão Geral</span>
+          </div>
+          <div class="actions">
+            <span class="btn ghost">Enviar PDF</span>
+            <span class="btn solid">Buscar precedente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="score">
+      <div class="lab">SCORE DECOMPOSTO · SEM CAIXA-PRETA</div>
+      <div class="scorebar"><span>Semântico</span><div class="track"><div class="fill" style="width:89.4%"></div></div><b>89,4%</b></div>
+      <div class="scorebar"><span>Lexical</span><div class="track"><div class="fill" style="width:100%"></div></div><b>100%</b></div>
+      <div class="scorebar final"><span>Final</span><div class="track"><div class="fill" style="width:93.6%"></div></div><b>93,6%</b></div>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 6 ===================== -->
+  <div id="s6" class="scene">
+    <div class="dots"></div>
+    <canvas id="g6" class="graph" width="620" height="620" data-layout-allow-overflow></canvas>
+    <div class="kicker"><span class="pulse"></span>GOVERNANÇA E CONFORMIDADE</div>
+    <h2 class="title">Construída para o <em>Judiciário</em></h2>
+    <div class="seals">
+      <div class="shield" id="sh0">
+        <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M5.5 7h13M5.5 7 3 13a3 3 0 0 0 6 0L6.5 7M18.5 7 16 13a3 3 0 0 0 6 0l-2.5-6M12 3a2 2 0 0 0-2 2h4a2 2 0 0 0-2-2Z"/></svg></span><span class="stag">CNJ 615/2025</span></div>
+        <b>Não substituição humana</b>
+        <p>A IA organiza e sugere; a decisão jurídica permanece com magistrados e servidores.</p>
+      </div>
+      <div class="shield" id="sh1">
+        <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><path d="M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4M12 15v2"/></svg></span><span class="stag">LGPD</span></div>
+        <b>Minimização de dados</b>
+        <p>Retenção limitada, exclusão manual e autoexclusão. Cache de PDF com TTL configurável.</p>
+      </div>
+      <div class="shield" id="sh2">
+        <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 9 4-1 7-4.5 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="stag">DADOS PROTEGIDOS</span></div>
+        <b>Sem treinamento com seus dados</b>
+        <p>API empresarial configurada para impedir o uso dos dados no treinamento dos modelos.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 7 ===================== -->
+  <div id="s7" class="scene">
+    <div class="dots"></div>
+    <div class="beam"></div>
+    <canvas id="g7" class="graph" width="620" height="620"></canvas>
+    <div class="wrap">
+      <h2><span class="l1" style="display:block">Menos atrito.</span><span class="l2" style="display:block">Mais <span class="gr">segurança jurídica</span>.</span></h2>
+      <p>A LexorAI reduz o tempo de triagem e a insegurança da pesquisa de precedentes.</p>
+    </div>
+  </div>
+
+  <!-- ===================== CENA 8 ===================== -->
+  <div id="s8" class="scene">
+    <div class="dots"></div>
+    <canvas id="g8" class="graph" width="520" height="520"></canvas>
+    <div class="glow-amb s8glow"></div>
+    <div class="center">
+      <div class="logo"><span class="glyph"><span class="o"></span><span class="i"></span></span><span class="wm">Lexor<b>AI</b></span></div>
+      <div class="talk">Vamos conversar.</div>
+      <div class="seal-row">Registrada no INPI · Aderente à LGPD · Conforme Resolução CNJ 615/2025</div>
+      <div class="seal-row two">CNPJ 63.946.564/0001-31 · São Luís / MA</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   TIMELINE MESTRE — todas as cenas em uma timeline GSAP única.
+   Cada cena tem sua função buildSceneN(); a ordem/temporização
+   fica centralizada em SCN. Para ajustar uma cena, edite seu
+   bloco de markup + a função correspondente.
+   ============================================================ */
+window.__timelines = window.__timelines || {};
+gsap.registerPlugin(CustomEase);
+
+/* Eases assinatura (do brief) */
+CustomEase.create('sig',  'M0,0 C0.4,0 0.2,1 1,1');     /* cubic-bezier(0.4,0,0.2,1)  — 80% das animações */
+CustomEase.create('drama','M0,0 C0.16,1 0.3,1 1,1');    /* cubic-bezier(0.16,1,0.3,1) — revelação de títulos */
+CustomEase.create('corp', 'M0,0 C0.2,0 0,1 1,1');       /* cubic-bezier(0.2,0,0,1)    — barras de score */
+
+const tl = gsap.timeline({ paused:true });
+
+/* Janela de cada cena: [início, duração] em segundos */
+const SCN = {
+  s1:[0,5], s2:[5,7], s3:[12,6], s4:[18,7], s5:[25,7], s6:[32,6], s7:[38,4], s8:[42,3]
+};
+const XF = 0.5; /* duração do crossfade */
+
+/* Crossfade entre cenas consecutivas no início de cada cena (exceto s1) */
+function crossfades(){
+  const order=['s1','s2','s3','s4','s5','s6','s7','s8'];
+  for(let i=1;i<order.length;i++){
+    const prev='#'+order[i-1], cur='#'+order[i];
+    const B=SCN[order[i]][0];           /* fronteira = início da cena atual */
+    const t=B-XF/2;                     /* crossfade centrado na fronteira */
+    tl.to(prev,{opacity:0,duration:XF,ease:'sig'}, t);
+    tl.fromTo(cur,{opacity:0},{opacity:1,duration:XF,ease:'sig'}, t);
+  }
+}
+
+/* Pulso ambiente finito e seekable (yoyo) */
+function pulse(sel,start,dur,a,b,cycle){
+  const reps=Math.max(1,Math.ceil(dur/cycle));
+  tl.fromTo(sel,{opacity:a},{opacity:b,duration:cycle,ease:'sine.inOut',yoyo:true,repeat:reps},start);
+}
+
+/* ---- Grafo orbital determinístico (dirigido pela timeline) ---- */
+function setupGraph(id,start,dur){
+  const cv=document.getElementById(id); if(!cv) return;
+  const ctx=cv.getContext('2d'); const SIZE=cv.width; const cx=SIZE/2, cy=SIZE/2;
+  const orbits=[{r:120,n:2,sp:0.0042,dir:1,ph:0.3},{r:200,n:3,sp:0.0026,dir:-1,ph:1.1},{r:288,n:4,sp:0.0016,dir:1,ph:0.0}];
+  const nodes=[];
+  orbits.forEach((o,oi)=>{for(let i=0;i<o.n;i++){nodes.push({orbit:oi,a:o.ph+(i*2*Math.PI/o.n),r:o.r});}});
+  function draw(t){
+    ctx.clearRect(0,0,SIZE,SIZE);
+    orbits.forEach(o=>{ctx.beginPath();ctx.arc(cx,cy,o.r,0,Math.PI*2);ctx.strokeStyle='rgba(31,214,166,0.14)';ctx.lineWidth=1;ctx.stroke();});
+    const pos=nodes.map(nd=>{const o=orbits[nd.orbit];const ang=nd.a+t*o.sp*o.dir;return {x:cx+Math.cos(ang)*nd.r,y:cy+Math.sin(ang)*nd.r};});
+    pos.forEach(p=>{const g=ctx.createLinearGradient(cx,cy,p.x,p.y);g.addColorStop(0,'rgba(31,214,166,0.0)');g.addColorStop(1,'rgba(31,214,166,0.28)');ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);ctx.strokeStyle=g;ctx.lineWidth=1;ctx.stroke();});
+    for(let i=0;i<pos.length;i++){for(let j=i+1;j<pos.length;j++){const dx=pos[i].x-pos[j].x,dy=pos[i].y-pos[j].y;const d=Math.hypot(dx,dy);if(d<175){ctx.beginPath();ctx.moveTo(pos[i].x,pos[i].y);ctx.lineTo(pos[j].x,pos[j].y);ctx.strokeStyle='rgba(126,240,210,'+(0.16*(1-d/175))+')';ctx.lineWidth=1;ctx.stroke();}}}
+    pos.forEach((p,i)=>{const pl=0.6+0.4*Math.sin(t*0.05+i);const rad=4.5+(2-nodes[i].orbit)*1.1;ctx.beginPath();ctx.arc(p.x,p.y,rad,0,Math.PI*2);ctx.fillStyle='#1fd6a6';ctx.shadowColor='#1fd6a6';ctx.shadowBlur=14*pl;ctx.fill();ctx.shadowBlur=0;});
+    const corePulse=0.7+0.3*Math.sin(t*0.04);
+    const grd=ctx.createRadialGradient(cx,cy,2,cx,cy,40);grd.addColorStop(0,'rgba(126,240,210,'+(0.9*corePulse)+')');grd.addColorStop(1,'rgba(31,214,166,0)');
+    ctx.beginPath();ctx.arc(cx,cy,40,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,9,0,Math.PI*2);ctx.fillStyle='#7ef0d2';ctx.shadowColor='#1fd6a6';ctx.shadowBlur=24;ctx.fill();ctx.shadowBlur=0;
+    ctx.beginPath();ctx.arc(cx,cy,22,0,Math.PI*2);ctx.strokeStyle='rgba(31,214,166,0.4)';ctx.lineWidth=1.2;ctx.stroke();
+  }
+  draw(0);
+  const proxy={t:0};
+  tl.fromTo(proxy,{t:0},{t:dur*60,duration:dur,ease:'none',onUpdate:()=>draw(proxy.t)}, start);
+}
+
+/* ===================== CENA 1 ===================== */
+function buildScene1(){
+  const [s]=SCN.s1;
+  tl.fromTo('#s1 .logo',{opacity:0,y:30},{opacity:1,y:0,duration:0.8,ease:'sig'}, s+0.2);
+  tl.fromTo('#s1l1',{opacity:0,y:46},{opacity:1,y:0,duration:0.8,ease:'drama'}, s+0.6);
+  tl.fromTo('#s1l2',{opacity:0,y:46},{opacity:1,y:0,duration:0.8,ease:'drama'}, s+0.75);
+  tl.fromTo('#s1l3',{opacity:0,y:46},{opacity:1,y:0,duration:0.8,ease:'drama'}, s+0.9);
+  tl.fromTo('#s1uline',{scaleX:0},{scaleX:1,duration:0.4,ease:'sig'}, s+1.25);
+  setupGraph('g1', s, SCN.s1[1]);
+}
+
+/* ===================== CENA 2 ===================== */
+function buildScene2(){
+  const [s,d]=SCN.s2;
+  tl.fromTo('#s2 .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.1);
+  tl.fromTo('#s2 h2',{opacity:0,y:32},{opacity:1,y:0,duration:0.7,ease:'drama'}, s+0.28);
+  /* 5 rótulos âmbar entram pela esquerda, stagger 80ms */
+  tl.fromTo('#s2 .chip',{opacity:0,x:-60},{opacity:1,x:0,duration:0.5,ease:'sig',stagger:0.08}, s+0.55);
+  /* malha de pontos pulsando devagar */
+  pulse('#s2dots', s+0.3, d-0.6, 0.5, 0.28, 1.8);
+  pulse('#s2 .kicker .pulse', s+0.6, d-0.8, 1, 0.25, 0.75);
+}
+
+/* ===================== CENA 3 ===================== */
+function buildScene3(){
+  const [s,d]=SCN.s3;
+  const end=s+d;
+  tl.fromTo('#s3 .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.1);
+  /* cor âmbar inicial dos rótulos */
+  const AM_F='rgba(226,178,74,0.10)', AM_S='rgba(226,178,74,0.42)', AM_T='#e8c373';
+  const EM_F='rgba(31,214,166,0.10)',  EM_S='rgba(31,214,166,0.50)',  EM_T='#7ef0d2';
+  for(let i=0;i<5;i++){
+    tl.set('#lb'+i+' rect',{attr:{fill:AM_F,stroke:AM_S}}, s);
+    tl.set('#lb'+i+' text',{attr:{fill:AM_T}}, s);
+    tl.fromTo('#lb'+i,{opacity:0},{opacity:1,duration:0.4,ease:'sig'}, s+0.15+i*0.1);
+    const cl=document.getElementById('cl'+i); const len=cl.getTotalLength();
+    const drawAt=s+0.5+i*0.22, conn=drawAt+0.5;
+    tl.set('#cl'+i,{strokeDasharray:len,strokeDashoffset:len}, s);
+    tl.to('#cl'+i,{strokeDashoffset:0,duration:0.5,ease:'sig'}, drawAt);
+    /* rótulo: âmbar -> esmeralda quando conecta */
+    tl.to('#lb'+i+' rect',{attr:{fill:EM_F,stroke:EM_S},duration:0.3,ease:'sig'}, conn);
+    tl.to('#lb'+i+' text',{attr:{fill:EM_T},duration:0.3,ease:'sig'}, conn);
+    /* tracejada: aparece e flui continuamente (linear) */
+    tl.to('#cf'+i,{opacity:1,duration:0.3,ease:'sig'}, conn);
+    tl.fromTo('#cf'+i,{strokeDashoffset:0},{strokeDashoffset:-320,duration:(end-conn),ease:'none'}, conn);
+  }
+  /* núcleo: glow cresce conforme as linhas chegam, depois pulsa */
+  tl.to('#s3glow',{opacity:0.42,duration:1.6,ease:'sig'}, s+0.6);
+  pulse('#s3glow', s+2.3, d-2.4, 0.42, 0.6, 1.4);
+  pulse('#s3ring', s+0.6, d-0.7, 1, 0.55, 1.3);
+  tl.fromTo('#s3 .note',{opacity:0,y:14},{opacity:1,y:0,duration:0.6,ease:'sig'}, s+2.4);
+}
+
+/* ===================== CENA 4 ===================== */
+function buildScene4(){
+  const [s,d]=SCN.s4;
+  tl.fromTo('#s4 .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.1);
+  const pn=document.querySelectorAll('#s4 .pnum');
+  const bs=document.querySelectorAll('#s4 .pillar b');
+  const ps=document.querySelectorAll('#s4 .pillar p');
+  for(let i=0;i<3;i++){
+    const t0=s+0.4+i*0.12;
+    tl.fromTo(pn[i],{opacity:0,y:34},{opacity:1,y:0,duration:0.55,ease:'drama'}, t0);
+    tl.fromTo(bs[i],{opacity:0,y:22},{opacity:1,y:0,duration:0.5,ease:'sig'}, t0+0.05);
+    tl.fromTo(ps[i],{opacity:0,y:18},{opacity:1,y:0,duration:0.5,ease:'sig'}, t0+0.15);
+  }
+  /* divisores verticais crescem */
+  tl.fromTo('#s4 .pdiv',{scaleY:0},{scaleY:1,duration:0.6,ease:'sig',stagger:0.12}, s+0.7);
+  pulse('#s4 .glow-amb', s+0.6, d-0.7, 0.5, 0.85, 2.2);
+  pulse('#s4 .kicker .pulse', s+0.5, d-0.7, 1, 0.25, 0.75);
+}
+
+/* ===================== CENA 5 ===================== */
+function buildScene5(){
+  const [s,d]=SCN.s5;
+  tl.fromTo('#s5 .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.1);
+  /* mockup sobe + fade-in (30px, 600ms) — um único tween de transform */
+  tl.fromTo('#s5 .mock',{opacity:0,y:30},{opacity:1,y:0,duration:0.6,ease:'sig'}, s+0.3);
+  /* painel de score aparece, depois barras preenchem (scaleX, stagger 200ms, ease corporate) */
+  tl.fromTo('#s5 .score',{opacity:0,y:24},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.55);
+  const fills=document.querySelectorAll('#s5 .scorebar .fill');
+  const nums=document.querySelectorAll('#s5 .scorebar b');
+  for(let i=0;i<fills.length;i++){
+    const t0=s+0.85+i*0.2;
+    tl.fromTo(fills[i],{scaleX:0},{scaleX:1,duration:0.95,ease:'corp'}, t0);
+    tl.fromTo(nums[i],{opacity:0},{opacity:1,duration:0.4,ease:'sig'}, t0+0.25);
+  }
+  /* cursor piscando no campo */
+  pulse('#s5cur', s+0.8, d-1, 1, 0, 0.5);
+  pulse('#s5 .kicker .pulse', s+0.5, d-0.7, 1, 0.25, 0.75);
+}
+
+/* ===================== CENA 6 ===================== */
+function buildScene6(){
+  const [s,d]=SCN.s6;
+  tl.fromTo('#s6 .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:'sig'}, s+0.1);
+  tl.fromTo('#s6 h2',{opacity:0,y:30},{opacity:1,y:0,duration:0.7,ease:'drama'}, s+0.25);
+  /* selos entram center-out: centro primeiro, depois laterais */
+  const appear=[s+0.62, s+0.5, s+0.62];   /* sh0(esq), sh1(centro), sh2(dir) */
+  const fromX=[ 40, 0, -40];
+  ['#sh0','#sh1','#sh2'].forEach((sel,i)=>{
+    tl.fromTo(sel,{opacity:0,scale:0.9,x:fromX[i]},{opacity:1,scale:1,x:0,duration:0.55,ease:'sig'}, appear[i]);
+    drawIcon(sel+' .sicon svg', appear[i]+0.22);
+  });
+  setupGraph('g6', s, d);
+}
+
+/* Desenha o traço dos ícones (stroke-dasharray draw-on) */
+function drawIcon(scope,t0){
+  const els=document.querySelectorAll(scope+' path, '+scope+' rect, '+scope+' circle');
+  els.forEach((el)=>{
+    let len=0; try{ len=el.getTotalLength(); }catch(e){}
+    if(len>0){
+      tl.set(el,{strokeDasharray:len,strokeDashoffset:len}, t0-0.001);
+      tl.to(el,{strokeDashoffset:0,duration:0.55,ease:'sig'}, t0);
+    }else{
+      tl.fromTo(el,{opacity:0},{opacity:1,duration:0.4,ease:'sig'}, t0);
+    }
+  });
+}
+
+/* ===================== CENA 7 ===================== */
+function buildScene7(){
+  const [s,d]=SCN.s7;
+  tl.fromTo('#s7 .l1',{opacity:0,y:42},{opacity:1,y:0,duration:0.8,ease:'drama'}, s+0.2);
+  tl.fromTo('#s7 .l2',{opacity:0,y:42},{opacity:1,y:0,duration:0.8,ease:'drama'}, s+0.38);
+  tl.fromTo('#s7 p',{opacity:0,y:20},{opacity:1,y:0,duration:0.6,ease:'sig'}, s+0.85);
+  setupGraph('g7', s, d);
+}
+
+/* ===================== CENA 8 ===================== */
+function buildScene8(){
+  const [s,d]=SCN.s8;
+  tl.fromTo('#s8 .logo',{opacity:0,scale:0.9,y:20},{opacity:1,scale:1,y:0,duration:0.6,ease:'sig'}, s+0.1);
+  tl.fromTo('#s8 .talk',{opacity:0,y:30},{opacity:1,y:0,duration:0.7,ease:'drama'}, s+0.35);
+  tl.fromTo('#s8 .seal-row',{opacity:0,y:16},{opacity:1,y:0,duration:0.5,ease:'sig',stagger:0.15}, s+0.7);
+  setupGraph('g8', s, d);
+  /* último pulso de glow do núcleo + segura o frame final */
+  tl.fromTo('#s8 .s8glow',{opacity:0,scale:0.85},{opacity:0.55,scale:1,duration:0.5,ease:'sig'}, s+1.6);
+  tl.to('#s8 .s8glow',{opacity:0.2,scale:1.08,duration:0.7,ease:'sine.inOut'}, s+2.1);
+}
+
+/* ---- Monta tudo ---- */
+buildScene1(); buildScene2(); buildScene3(); buildScene4();
+buildScene5(); buildScene6(); buildScene7(); buildScene8();
+crossfades();
+
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
