@@ -1,0 +1,24 @@
+# Claude Code local config (not for sharing)
+.claude/settings.local.json
+.claude/skills/
+
+# Claude agents session data
+.agents/
+
+# Skills lock (local tooling state)
+skills-lock.json
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if ever used)
+node_modules/
+npm-debug.log*

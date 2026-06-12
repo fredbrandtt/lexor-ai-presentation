@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexorAI — Storyboard · Vídeo de Vendas</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700,900&f[]=supreme@400,500,700&f[]=jet-brains-mono@400,500&display=swap">
+<style>
+/* ===== TEMA (idêntico ao pitch) ===== */
+:root{
+  --bg:#06100f; --bg2:#0c211d; --panel:#0b1a18; --panel2:#0e2220;
+  --ink:#eef5f3; --muted:#7e9b96; --muted2:#5e7873;
+  --accent:#1fd6a6; --accent-soft:#7ef0d2; --accent2:#0e7c66;
+  --warn:#e2b24a; --line:rgba(31,214,166,.16); --line-soft:rgba(238,245,243,.08);
+  --font-d:'Boska',serif; --font-b:'Supreme',sans-serif; --font-m:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#040c0b;color:var(--ink);font-family:var(--font-b);padding:54px 48px 90px;
+  background-image:radial-gradient(120% 80% at 50% -10%,#0a1a17 0%,#040c0b 60%)}
+
+/* ===== CABEÇALHO DA PÁGINA ===== */
+.sb-head{max-width:1856px;margin:0 auto 46px;display:flex;justify-content:space-between;align-items:flex-end;gap:40px;border-bottom:1px solid var(--line-soft);padding-bottom:30px}
+.sb-head .logo{display:flex;align-items:center;gap:16px}
+.sb-head .glyph{width:40px;height:40px;position:relative;transform:rotate(45deg)}
+.sb-head .glyph .o{position:absolute;inset:0;border:2.5px solid var(--accent);border-radius:11px}
+.sb-head .glyph .i{position:absolute;inset:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:5px}
+.sb-head .wm{font-family:var(--font-d);font-weight:700;font-size:32px;letter-spacing:-1px}
+.sb-head .wm b{color:var(--accent)}
+.sb-head h1{font-family:var(--font-d);font-weight:700;font-size:30px;letter-spacing:-.5px;margin-top:14px}
+.sb-head .sub{font-family:var(--font-m);font-size:14px;color:var(--muted);letter-spacing:.06em;margin-top:8px}
+.sb-head .meta{text-align:right;font-family:var(--font-m);font-size:13px;color:var(--muted2);line-height:1.9;letter-spacing:.05em}
+.sb-head .meta b{color:var(--accent);font-weight:500}
+
+/* ===== GRID DE QUADROS ===== */
+.sb-grid{max-width:1856px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px 56px}
+.cell{display:flex;flex-direction:column}
+.frame-box{width:884px;height:497.25px;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;
+  box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.frame{width:1920px;height:1080px;transform:scale(.460417);transform-origin:top left;position:absolute;left:0;top:0;
+  background:radial-gradient(110% 120% at 12% 0%,var(--bg2) 0%,var(--bg) 55%);color:var(--ink);overflow:hidden}
+
+/* legenda do quadro */
+.cap{margin-top:18px;display:flex;gap:18px;align-items:flex-start}
+.cap .badge{flex:0 0 auto;font-family:var(--font-m);font-size:13px;color:#05221c;background:var(--accent);
+  padding:5px 11px;border-radius:7px;font-weight:600;letter-spacing:.04em;margin-top:3px}
+.cap .badge.amber{background:var(--warn)}
+.cap .ct h3{font-family:var(--font-d);font-weight:700;font-size:24px;letter-spacing:-.4px;display:flex;align-items:baseline;gap:12px}
+.cap .ct h3 .time{font-family:var(--font-m);font-size:14px;color:var(--muted2);font-weight:400;letter-spacing:.04em}
+.cap .ct p{font-size:14.5px;line-height:1.55;color:var(--muted);margin-top:6px;max-width:820px}
+.cap .ct p b{color:var(--ink);font-weight:500}
+
+/* ===== COMPONENTES DE CENA (reaproveitados do pitch) ===== */
+.dots{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(var(--line) 1.5px,transparent 1.5px);background-size:46px 46px;
+  -webkit-mask:radial-gradient(95% 95% at 25% 25%,#000,transparent);mask:radial-gradient(95% 95% at 25% 25%,#000,transparent);pointer-events:none}
+.beam{position:absolute;right:0;top:0;width:860px;height:100%;background:linear-gradient(115deg,transparent 38%,rgba(31,214,166,.08) 54%,transparent 70%);pointer-events:none}
+.fr-logo{display:flex;align-items:center;gap:16px}
+.fr-logo .glyph{width:42px;height:42px;position:relative;transform:rotate(45deg);flex:0 0 auto}
+.fr-logo .glyph .o{position:absolute;inset:0;border:2.5px solid var(--accent);border-radius:11px}
+.fr-logo .glyph .i{position:absolute;inset:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:5px}
+.fr-logo .wm{font-family:var(--font-d);font-weight:700;font-size:34px;letter-spacing:-1px}
+.fr-logo .wm b{color:var(--accent)}
+.kicker{display:inline-flex;align-items:center;gap:13px;font-family:var(--font-m);font-size:19px;color:var(--accent);border:1px solid var(--line);padding:11px 20px;border-radius:999px;width:max-content;letter-spacing:.04em}
+.kicker.warn{color:var(--warn);border-color:rgba(226,178,74,.3)}
+.kicker .pulse{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:bl 1.5s infinite}
+.kicker.warn .pulse{background:var(--warn);box-shadow:0 0 12px var(--warn)}
+@keyframes bl{50%{opacity:.25}}
+.title{font-family:var(--font-d);font-weight:700;line-height:1;letter-spacing:-2px;color:var(--ink)}
+.title em{font-style:italic;font-weight:500;color:var(--accent)}
+.title .g{font-style:italic;font-weight:500;background:linear-gradient(100deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:31px;line-height:1.55;color:var(--muted);font-weight:400}
+.lead em{font-style:italic;color:var(--ink)}
+.graph{position:absolute}
+.ring{position:absolute;border:1px solid var(--line);border-radius:50%}
+
+/* ---- CENA 1 ---- */
+.s1 .fr-logo{position:absolute;left:120px;top:88px}
+.s1 .wrap{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:1180px;padding-bottom:60px}
+.s1 h1{font-family:var(--font-d);font-weight:700;font-size:128px;line-height:.98;letter-spacing:-3px}
+.s1 .u{position:relative;font-style:italic;font-weight:500;color:var(--accent);display:inline-block}
+.s1 .u::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-soft))}
+.s1 .graph{right:120px;top:50%;transform:translateY(-50%);width:620px;height:620px}
+
+/* ---- CENA 2 ---- */
+.s2 .left{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:840px;padding-bottom:30px}
+.s2 h2{font-size:80px;line-height:1.02;margin-top:30px}
+.s2 .scatter{position:absolute;right:90px;top:0;width:880px;height:100%}
+.chip{position:absolute;font-family:var(--font-b);font-weight:500;font-size:30px;color:#e8c373;background:rgba(226,178,74,.09);
+  border:1px solid rgba(226,178,74,.42);border-radius:14px;padding:20px 30px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.chip.c1{top:120px;left:70px;transform:rotate(-5deg)}
+.chip.c2{top:300px;left:420px;transform:rotate(4deg)}
+.chip.c3{top:470px;left:120px;transform:rotate(-2.5deg)}
+.chip.c4{top:650px;left:430px;transform:rotate(6deg)}
+.chip.c5{top:820px;left:150px;transform:rotate(-4deg)}
+
+/* ---- CENA 3 ---- */
+.s3 .kicker{position:absolute;left:120px;top:120px}
+.s3 svg{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);width:1180px;height:760px}
+.flow{stroke-dasharray:7 9}
+.flow.live{animation:dash 2.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-32}}
+.s3 .cap-note{position:absolute;left:120px;bottom:120px;display:flex;align-items:center;gap:18px;font-family:var(--font-m);font-size:18px;color:var(--muted2)}
+.s3 .cap-note span{width:28px;height:1px;background:var(--accent);display:block}
+
+/* ---- CENA 4 ---- */
+.s4 .kicker{position:absolute;left:120px;top:120px}
+.s4 .cols{position:absolute;left:120px;right:120px;top:330px;display:flex;gap:0}
+.pillar{flex:1;padding:0 56px}
+.pillar:first-child{padding-left:0}.pillar:last-child{padding-right:0}
+.pdiv{width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,var(--line),transparent);flex:0 0 auto}
+.pnum{font-family:var(--font-d);font-weight:900;font-size:150px;line-height:.8;color:transparent;-webkit-text-stroke:2px var(--accent);margin-bottom:32px}
+.pillar b{display:block;font-family:var(--font-d);font-weight:700;font-size:44px;color:var(--ink);margin-bottom:20px;letter-spacing:-.5px}
+.pillar p{font-size:25px;line-height:1.5;color:var(--muted)}
+
+/* ---- CENA 5 ---- */
+.s5 .kicker{position:absolute;left:120px;top:104px}
+.s5 .score{position:absolute;left:120px;top:300px;width:560px;background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:34px 38px}
+.s5 .score .lab{font-family:var(--font-m);font-size:15px;color:var(--muted);letter-spacing:.1em;margin-bottom:22px}
+.scorebar{display:flex;align-items:center;gap:18px;margin:16px 0}
+.scorebar span{font-size:20px;color:var(--muted);width:120px;flex:0 0 auto}
+.scorebar .track{flex:1;height:11px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+.scorebar .fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:6px}
+.scorebar b{font-family:var(--font-d);font-weight:700;font-size:23px;width:84px;text-align:right;flex:0 0 auto}
+.scorebar.final b{color:var(--accent)}
+.scorebar.final .fill{background:linear-gradient(90deg,var(--accent),var(--accent-soft))}
+.s5 .mock{position:absolute;right:120px;top:230px;width:1010px}
+.browser{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0a1614;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.browser .bar{height:46px;background:#0a1614;display:flex;align-items:center;gap:9px;padding:0 20px;border-bottom:1px solid var(--line-soft)}
+.browser .bar i{width:12px;height:12px;border-radius:50%;background:#26433d;display:block}
+.browser .bar .url{margin-left:16px;font-family:var(--font-m);font-size:15px;color:var(--muted2)}
+.ui{padding:40px 44px}
+.ui .q{font-family:var(--font-d);font-weight:700;font-size:30px;color:var(--ink);margin-bottom:24px}
+.ui .field{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025);padding:24px 26px;font-size:21px;color:var(--muted);margin-bottom:26px}
+.ui .field .cursor{color:var(--accent)}
+.ui .filters{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.fchip{font-family:var(--font-m);font-size:16px;padding:10px 18px;border-radius:9px;border:1px solid var(--line-soft);color:var(--muted)}
+.fchip.on{border-color:var(--accent);color:var(--accent);background:rgba(31,214,166,.1)}
+.ui .actions{display:flex;gap:16px}
+.btn{font-family:var(--font-b);font-weight:500;font-size:19px;padding:16px 30px;border-radius:11px}
+.btn.ghost{border:1px solid var(--line);color:var(--ink);background:transparent}
+.btn.solid{background:var(--accent);color:#05221c;font-weight:600}
+
+/* ---- CENA 6 ---- */
+.s6 .kicker{position:absolute;left:120px;top:120px}
+.s6 h2{position:absolute;left:120px;top:188px;font-size:74px}
+.s6 .seals{position:absolute;left:120px;right:120px;top:412px;display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.shield{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line-soft);border-top:2px solid var(--accent);border-radius:18px;padding:36px 34px}
+.shead{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.sicon{width:60px;height:60px;border-radius:15px;background:rgba(31,214,166,.1);border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.sicon svg{width:32px;height:32px;stroke:var(--accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.stag{font-family:var(--font-m);font-size:16px;letter-spacing:.06em;color:var(--accent)}
+.shield b{display:block;font-family:var(--font-d);font-weight:700;font-size:31px;color:var(--ink);margin-bottom:14px;letter-spacing:-.5px;line-height:1.1}
+.shield p{font-size:21px;line-height:1.5;color:var(--muted)}
+.s6 .graph{right:60px;bottom:-220px;width:620px;height:620px;opacity:.4}
+
+/* ---- CENA 7 ---- */
+.s7 .wrap{position:absolute;left:120px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:1180px;padding-bottom:30px}
+.s7 h2{font-family:var(--font-d);font-weight:700;font-size:118px;line-height:.98;letter-spacing:-3px}
+.s7 .gr{font-style:italic;font-weight:500;background:linear-gradient(100deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;color:transparent}
+.s7 p{font-size:31px;line-height:1.5;color:var(--muted);max-width:880px;margin-top:36px}
+.s7 .graph{right:80px;top:50%;transform:translateY(-50%);width:560px;height:560px}
+
+/* ---- CENA 8 ---- */
+.s8{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+.s8 .graph{right:120px;top:50%;transform:translateY(-50%);width:520px;height:520px;opacity:.55}
+.s8 .center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.s8 .fr-logo{transform:scale(1.25);margin-bottom:46px}
+.s8 .talk{font-family:var(--font-d);font-weight:700;font-size:96px;letter-spacing:-2px}
+.s8 .seal-row{font-family:var(--font-m);font-size:22px;color:var(--muted);margin-top:40px;letter-spacing:.04em}
+.s8 .seal-row.two{font-size:18px;color:var(--muted2);margin-top:16px}
+</style>
+</head>
+<body>
+
+<div class="sb-head">
+  <div>
+    <div class="logo"><span class="glyph"><span class="o"></span><span class="i"></span></span><span class="wm">Lexor<b>AI</b></span></div>
+    <h1>Storyboard — Vídeo de Vendas</h1>
+    <div class="sub">8 cenas · validação de copy e direção visual · quadros estáticos (momento-herói de cada cena)</div>
+  </div>
+  <div class="meta">
+    <b>1920 × 1080</b> · 30fps · ~45s<br>
+    Sem trilha · sem locução<br>
+    Motion: Premium / Luxury<br>
+    Paleta Esmeralda Editorial
+  </div>
+</div>
+
+<div class="sb-grid">
+
+  <!-- ===================== CENA 1 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s1">
+      <div class="dots"></div>
+      <div class="beam"></div>
+      <div class="graph" id="g1"></div>
+      <div class="fr-logo"><span class="glyph"><span class="o"></span><span class="i"></span></span><span class="wm">Lexor<b>AI</b></span></div>
+      <div class="wrap">
+        <h1>Encontre o<br>precedente <span class="u">certo</span><br>em segundos</h1>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 1</span><div class="ct">
+      <h3>Abertura <span class="time">0–5s</span></h3>
+      <p><b>Logo</b> faz fade-in subindo. O título revela <b>linha a linha</b> (3 linhas, stagger 150ms, easing dramático), com <b>“certo”</b> em itálico esmeralda e um <b>sublinhado</b> que cresce da esquerda. Grafo orbital girando à direita desde o frame 0. Fade-out suave no fim.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 2 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s2">
+      <div class="dots"></div>
+      <div class="left">
+        <div class="kicker warn"><span class="pulse"></span>O PROBLEMA</div>
+        <h2 class="title">A jurisprudência existe.<br><span class="g">Encontrá-la</span> é o problema.</h2>
+      </div>
+      <div class="scatter">
+        <div class="chip c1">Tabela IRR</div>
+        <div class="chip c2">Súmulas / OJs</div>
+        <div class="chip c3">Repercussão Geral</div>
+        <div class="chip c4">ADI / ADC / ADPF</div>
+        <div class="chip c5">PDFs avulsos</div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge amber">CENA 2</span><div class="ct">
+      <h3>O problema <span class="time">5–12s</span></h3>
+      <p>Título à esquerda com <b>“Encontrá-la”</b> em itálico esmeralda. À direita, <b>cinco rótulos âmbar</b> desalinhados entram escalonados pela esquerda (stagger 80ms). Sensação de <b>dispersão e tensão</b>. Malha de pontos pulsando ao fundo.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 3 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s3">
+      <div class="dots"></div>
+      <div class="kicker"><span class="pulse"></span>A CONVERGÊNCIA</div>
+      <svg viewBox="0 0 1180 760">
+        <defs>
+          <linearGradient id="conv3" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="rgba(226,178,74,.08)"/>
+            <stop offset="1" stop-color="rgba(31,214,166,.6)"/>
+          </linearGradient>
+        </defs>
+        <!-- linhas terminam na borda do círculo (centro 720,380 r=96 -> parar em ~624) -->
+        <g fill="none" stroke="url(#conv3)" stroke-width="1.6">
+          <path class="flow live" d="M250,96 C520,96 470,360 624,372"/>
+          <path class="flow live" d="M250,236 C500,236 480,360 624,376"/>
+          <path class="flow live" d="M250,380 C470,380 500,380 624,380"/>
+          <path class="flow live" d="M250,524 C500,524 480,400 624,384"/>
+          <path class="flow live" d="M250,664 C520,664 470,400 624,388"/>
+        </g>
+        <!-- rótulos: alguns já viraram esmeralda (mostra a transição âmbar->esmeralda) -->
+        <g font-family="Supreme, sans-serif" font-size="22" font-weight="500">
+          <g><rect x="40" y="68" width="220" height="56" rx="13" fill="rgba(31,214,166,.1)" stroke="rgba(31,214,166,.5)"/><text x="150" y="104" text-anchor="middle" fill="#7ef0d2">Tabela IRR</text></g>
+          <g><rect x="40" y="208" width="220" height="56" rx="13" fill="rgba(31,214,166,.1)" stroke="rgba(31,214,166,.5)"/><text x="150" y="244" text-anchor="middle" fill="#7ef0d2">Súmulas / OJs</text></g>
+          <g><rect x="40" y="352" width="220" height="56" rx="13" fill="rgba(31,214,166,.1)" stroke="rgba(31,214,166,.5)"/><text x="150" y="388" text-anchor="middle" fill="#7ef0d2">Repercussão Geral</text></g>
+          <g><rect x="40" y="496" width="220" height="56" rx="13" fill="rgba(226,178,74,.1)" stroke="rgba(226,178,74,.42)"/><text x="150" y="532" text-anchor="middle" fill="#e8c373">ADI / ADC / ADPF</text></g>
+          <g><rect x="40" y="636" width="220" height="56" rx="13" fill="rgba(226,178,74,.1)" stroke="rgba(226,178,74,.42)"/><text x="150" y="672" text-anchor="middle" fill="#e8c373">PDFs avulsos</text></g>
+        </g>
+        <!-- núcleo central, sólido por cima das linhas -->
+        <circle cx="720" cy="380" r="124" fill="none" stroke="rgba(31,214,166,.16)" stroke-width="1"/>
+        <circle cx="720" cy="380" r="96" fill="#08201b" stroke="rgba(31,214,166,.35)" stroke-width="1.5"/>
+        <circle cx="720" cy="380" r="64" fill="rgba(31,214,166,.14)" stroke="var(--accent)" stroke-width="2.5"/>
+        <text x="720" y="372" text-anchor="middle" font-family="Boska, serif" font-weight="700" font-size="38" fill="#1fd6a6">Lexor</text>
+        <text x="720" y="404" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="15" letter-spacing="1" fill="#7ef0d2">um fluxo</text>
+      </svg>
+      <div class="cap-note"><span></span>Do caos à ordem: cada fonte vira um nó conectado.</div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 3</span><div class="ct">
+      <h3>A convergência — momento <em>aha</em> <span class="time">12–18s</span></h3>
+      <p>Linhas tracejadas esmeralda <b>fluem</b> de cada rótulo até o núcleo <b>“Lexor / um fluxo”</b> (terminam na borda, nunca cruzam o círculo). Conforme conectam, cada rótulo <b>vira de âmbar para esmeralda</b>. O núcleo ganha <b>glow pulsante</b>. A virada emocional do vídeo.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 4 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s4">
+      <div class="dots"></div>
+      <div class="kicker"><span class="pulse"></span>COMO FUNCIONA</div>
+      <div class="cols">
+        <div class="pillar"><div class="pnum">I</div><b>Unificação</b><p>Linguagem natural ou PDF, sem navegar por tabelas.</p></div>
+        <div class="pdiv"></div>
+        <div class="pillar"><div class="pnum">II</div><b>Recuperação</b><p>Busca textual + vetorial por similaridade.</p></div>
+        <div class="pdiv"></div>
+        <div class="pillar"><div class="pnum">III</div><b>Explicação</b><p>Resultados com as fontes sempre à mostra.</p></div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 4</span><div class="ct">
+      <h3>Como funciona <span class="time">18–25s</span></h3>
+      <p>Três <b>numerais romanos vazados</b> (I, II, III) entram em sequência (stagger 120ms) com os rótulos <b>Unificação · Recuperação · Explicação</b>. A descrição sob cada um faz fade-in 100ms depois. <b>Divisores verticais</b> crescem (scaleY) entre as colunas.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 5 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s5">
+      <div class="dots"></div>
+      <div class="kicker"><span class="pulse"></span>O PRODUTO EM AÇÃO</div>
+      <div class="mock">
+        <div class="browser">
+          <div class="bar"><i></i><i></i><i></i><span class="url">lexorai.app</span></div>
+          <div class="ui">
+            <div class="q">Buscar precedente</div>
+            <div class="field">Trabalho intermitente e horas extras no regime 12x36<span class="cursor">▎</span></div>
+            <div class="filters">
+              <span class="fchip on">TST</span><span class="fchip on">STF</span>
+              <span class="fchip">IRR</span><span class="fchip">Súmulas</span><span class="fchip">Repercussão Geral</span>
+            </div>
+            <div class="actions">
+              <span class="btn ghost">Enviar PDF</span>
+              <span class="btn solid">Buscar precedente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="score">
+        <div class="lab">SCORE DECOMPOSTO · SEM CAIXA-PRETA</div>
+        <div class="scorebar"><span>Semântico</span><div class="track"><div class="fill" style="width:89.4%"></div></div><b>89,4%</b></div>
+        <div class="scorebar"><span>Lexical</span><div class="track"><div class="fill" style="width:100%"></div></div><b>100%</b></div>
+        <div class="scorebar final"><span>Final</span><div class="track"><div class="fill" style="width:93.6%"></div></div><b>93,6%</b></div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 5</span><div class="ct">
+      <h3>O produto em ação <span class="time">25–32s</span></h3>
+      <p>O <b>mockup de browser</b> (url “lexorai.app”) sobe e dá fade-in. Dentro, a interface de pesquisa: campo da pergunta, filtros <b>TST/STF</b>, botões <b>Enviar PDF</b> e <b>Buscar precedente</b>. À esquerda, três <b>barras de score</b> preenchem L→R (Final em esmeralda). Tom de <b>confiança e transparência</b>.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 6 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s6">
+      <div class="dots"></div>
+      <div class="graph" id="g6"></div>
+      <div class="kicker"><span class="pulse"></span>GOVERNANÇA E CONFORMIDADE</div>
+      <h2 class="title">Construída para o <em>Judiciário</em></h2>
+      <div class="seals">
+        <div class="shield">
+          <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M5.5 7h13M5.5 7 3 13a3 3 0 0 0 6 0L6.5 7M18.5 7 16 13a3 3 0 0 0 6 0l-2.5-6M12 3a2 2 0 0 0-2 2h4a2 2 0 0 0-2-2Z"/></svg></span><span class="stag">CNJ 615/2025</span></div>
+          <b>Não substituição humana</b>
+          <p>A IA organiza e sugere; a decisão jurídica permanece com magistrados e servidores.</p>
+        </div>
+        <div class="shield">
+          <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4M12 15v2"/></svg></span><span class="stag">LGPD</span></div>
+          <b>Minimização de dados</b>
+          <p>Retenção limitada, exclusão manual e autoexclusão. Cache de PDF com TTL configurável.</p>
+        </div>
+        <div class="shield">
+          <div class="shead"><span class="sicon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 9 4-1 7-4.5 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="stag">DADOS PROTEGIDOS</span></div>
+          <b>Sem treinamento com seus dados</b>
+          <p>API empresarial configurada para impedir o uso dos dados no treinamento dos modelos.</p>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 6</span><div class="ct">
+      <h3>Construída para o Judiciário <span class="time">32–38s</span></h3>
+      <p>Título com <b>“Judiciário”</b> em itálico esmeralda. Três selos entram <b>do centro para os lados</b>, cada um com um ícone <b>outline</b> (balança, cadeado, escudo-check) cujo traço se <b>desenha</b> (draw-on). Grafo orbital discreto ao fundo.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 7 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s7">
+      <div class="dots"></div>
+      <div class="beam"></div>
+      <div class="graph" id="g7"></div>
+      <div class="wrap">
+        <h2>Menos atrito.<br>Mais <span class="gr">segurança jurídica</span>.</h2>
+        <p>A LexorAI reduz o tempo de triagem e a insegurança da pesquisa de precedentes.</p>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 7</span><div class="ct">
+      <h3>A promessa <span class="time">38–42s</span></h3>
+      <p>Frase grande em duas linhas com <b>“segurança jurídica”</b> em itálico com gradiente esmeralda. Subtítulo em cinza abaixo. Grafo orbital <b>protagonista</b> no canto, girando. Revelação dramática 800ms.</p>
+    </div></div>
+  </div>
+
+  <!-- ===================== CENA 8 ===================== -->
+  <div class="cell">
+    <div class="frame-box"><div class="frame s8">
+      <div class="dots"></div>
+      <div class="graph" id="g8"></div>
+      <div class="center">
+        <div class="fr-logo"><span class="glyph"><span class="o"></span><span class="i"></span></span><span class="wm">Lexor<b>AI</b></span></div>
+        <div class="talk">Vamos conversar.</div>
+        <div class="seal-row">Registrada no INPI · Aderente à LGPD · Conforme Resolução CNJ 615/2025</div>
+        <div class="seal-row two">CNPJ 63.946.564/0001-31 · São Luís / MA</div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="badge">CENA 8</span><div class="ct">
+      <h3>Fechamento <span class="time">42–45s</span></h3>
+      <p>Logo central, <b>“Vamos conversar.”</b> em Boska. Selos de conformidade em mono com fade-in escalonado. O núcleo do grafo dá um <b>último pulso de glow</b>. Segura o frame final.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<script>
+/* Grafo orbital animado (idêntico ao pitch) — instanciado nas cenas 1, 6, 7, 8 */
+function buildGraph(id){
+  const host=document.getElementById(id); if(!host) return;
+  const SIZE=620;
+  const cv=document.createElement('canvas');
+  cv.width=SIZE; cv.height=SIZE; cv.style.width=cv.style.height=SIZE+'px';
+  host.appendChild(cv);
+  const ctx=cv.getContext('2d'); const cx=SIZE/2, cy=SIZE/2;
+  const orbits=[{r:120,n:2,sp:0.0042,dir:1,ph:0.3},{r:200,n:3,sp:0.0026,dir:-1,ph:1.1},{r:288,n:4,sp:0.0016,dir:1,ph:0.0}];
+  const nodes=[];
+  orbits.forEach((o,oi)=>{for(let i=0;i<o.n;i++){nodes.push({orbit:oi,a:o.ph+(i*2*Math.PI/o.n),r:o.r});}});
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,SIZE,SIZE);
+    orbits.forEach(o=>{ctx.beginPath();ctx.arc(cx,cy,o.r,0,Math.PI*2);ctx.strokeStyle='rgba(31,214,166,0.14)';ctx.lineWidth=1;ctx.stroke();});
+    const pos=nodes.map(nd=>{const o=orbits[nd.orbit];const ang=nd.a+t*o.sp*o.dir;return {x:cx+Math.cos(ang)*nd.r,y:cy+Math.sin(ang)*nd.r,r:nd.r};});
+    pos.forEach(p=>{const g=ctx.createLinearGradient(cx,cy,p.x,p.y);g.addColorStop(0,'rgba(31,214,166,0.0)');g.addColorStop(1,'rgba(31,214,166,0.28)');ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);ctx.strokeStyle=g;ctx.lineWidth=1;ctx.stroke();});
+    for(let i=0;i<pos.length;i++){for(let j=i+1;j<pos.length;j++){const dx=pos[i].x-pos[j].x,dy=pos[i].y-pos[j].y;const d=Math.hypot(dx,dy);if(d<175){ctx.beginPath();ctx.moveTo(pos[i].x,pos[i].y);ctx.lineTo(pos[j].x,pos[j].y);ctx.strokeStyle=`rgba(126,240,210,${0.16*(1-d/175)})`;ctx.lineWidth=1;ctx.stroke();}}}
+    pos.forEach((p,i)=>{const pulse=0.6+0.4*Math.sin(t*0.05+i);const rad=4.5+(2-nodes[i].orbit)*1.1;ctx.beginPath();ctx.arc(p.x,p.y,rad,0,Math.PI*2);ctx.fillStyle='#1fd6a6';ctx.shadowColor='#1fd6a6';ctx.shadowBlur=14*pulse;ctx.fill();ctx.shadowBlur=0;});
+    const corePulse=0.7+0.3*Math.sin(t*0.04);
+    const grd=ctx.createRadialGradient(cx,cy,2,cx,cy,40);grd.addColorStop(0,`rgba(126,240,210,${0.9*corePulse})`);grd.addColorStop(1,'rgba(31,214,166,0)');
+    ctx.beginPath();ctx.arc(cx,cy,40,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,9,0,Math.PI*2);ctx.fillStyle='#7ef0d2';ctx.shadowColor='#1fd6a6';ctx.shadowBlur=24;ctx.fill();ctx.shadowBlur=0;
+    ctx.beginPath();ctx.arc(cx,cy,22,0,Math.PI*2);ctx.strokeStyle='rgba(31,214,166,0.4)';ctx.lineWidth=1.2;ctx.stroke();
+    t++; requestAnimationFrame(frame);
+  }
+  frame();
+}
+['g1','g6','g7','g8'].forEach(buildGraph);
+</script>
+</body>
+</html>
